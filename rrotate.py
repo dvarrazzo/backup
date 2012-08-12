@@ -39,7 +39,7 @@ import logging
 logger = logging.getLogger()
 logging.basicConfig(
     level=logging.INFO,
-    format='%(levelname)s %(message)s')
+    format='%(asctime)s %(levelname)s %(message)s')
 
 class ScriptError(Exception):
     """Controlled exception raised by the script."""
@@ -225,7 +225,7 @@ class DirHandler(object):
             return
 
         if stat.S_ISLNK(s.st_mode):
-            logger.debug("deleting link: %s", name)
+            logger.info("deleting link: %s", name)
             os.unlink(fn)
         else:
             raise ScriptError("can't delete: not a link: '%s'" % fn)
