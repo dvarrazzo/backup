@@ -38,7 +38,7 @@ from collections import namedtuple
 import logging
 logger = logging.getLogger()
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(levelname)s %(message)s')
 
 class ScriptError(Exception):
