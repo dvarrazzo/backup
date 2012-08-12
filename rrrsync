@@ -6,6 +6,13 @@ import os
 import sys
 from subprocess import call
 
+LOGFILE = '/var/log/rrsync.log'
+
+if os.path.exists(LOGFILE):
+    logfile = open(LOGFILE, 'a')
+else:
+    logfile = sys.stderr
+
 def main():
     # look for the dir as 1st or 2nd argument
     args = sys.argv[1:]
@@ -18,7 +25,7 @@ def main():
 
 
     here = os.path.dirname(os.path.abspath(sys.argv[0]))
-    if 0 != call([os.path.join(here, 'rrlinks'), dir]):
+    if 0 != call([os.path.join(here, 'rrlinks'), dir], stderr=logfile):
         print >>sys.stderr, "error running rrlinks"
         return 1
 
@@ -26,7 +33,7 @@ def main():
         print >>sys.stderr, "error running rrsync"
         return 1
 
-    if 0 != call([os.path.join(here, 'rrrotate'), dir]):
+    if 0 != call([os.path.join(here, 'rrrotate'), dir], stderr=logfile):
         print >>sys.stderr, "error running rrrotate"
         return 1
 
