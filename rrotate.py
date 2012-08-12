@@ -105,19 +105,21 @@ class DirHandler(object):
         period = periods[0]
 
         avail = self.get_backup_dirs(type=period.name)
-        if avail and avail[-1].date >= dir.date:
+        recent = avail and avail[-1] or None
+        if recent and recent.date >= dir.date and recent <> dir:
             raise ScriptError("new dir %s not more recent than %s"
                 % (avail[-1], dir))
-        if not avail or dir.date - avail[-1].date >= period.length:
+
+        if not recent or dir.date - recent.date >= period.length:
             dir = self.rename_backup_dir(dir, period.name, dir.date)
-            avail.append(dir)
 
             for old in avail:
                 if date - old.date >= period.retention:
                     self.rotate(old, date, periods[1:])
 
         else:
-            self.delete_backup_dir(dir)
+            if recent <> dir:
+                self.delete_backup_dir(dir)
 
     def _choose_current_dir(self, opt):
         # if there is a current dir, and it's still valid, reuse that one.
@@ -132,10 +134,16 @@ class DirHandler(object):
 
         # See if there is a dir of the shorter type and is still up to date
         dirs = self.get_backup_dirs(type=self.schedule[0].name)
-        if dirs and opt.date - dirs[-1].date < self.schedule[0].length:
-            dir = dirs[-1]
-            logger.debug("using backup dir still valid: %s", dir)
-            return dir
+        if dirs:
+            if opt.date < dirs[-1].date:
+                raise ScriptError(
+                    "available dir %s newer than the date requested %s"
+                    % (dirs[-1], opt.date))
+
+            if opt.date - dirs[-1].date < self.schedule[0].length:
+                dir = dirs[-1]
+                logger.debug("using backup dir still valid: %s", dir)
+                return dir
 
         dir = self.create_backup_dir('curr', opt.date)
         logger.debug("using new backup dir: %s", dir)
@@ -144,10 +152,11 @@ class DirHandler(object):
     def _choose_previous_dir(self, opt):
         curr = self.dir_from_link('curr')
         assert curr
-        dirs = [ d for d in self.get_backup_dirs(type=self.schedule[0].name)
-            if d.date < curr.date ]
-        if dirs:
-            return dirs[-1]
+        for period in self.schedule:
+            dirs = [ d for d in self.get_backup_dirs(type=period.name)
+                if d.date < curr.date ]
+            if dirs:
+                return dirs[-1]
 
     def get_backup_dirs(self, type):
         rv = []
@@ -174,6 +183,9 @@ class DirHandler(object):
 
     def rename_backup_dir(self, dir, type, date):
         tgtdir = BackupDir(type, date)
+        if dir == tgtdir:
+            return
+
         src = os.path.join(self.base_dir, str(dir))
         tgt = os.path.join(self.base_dir, str(tgtdir))
 
