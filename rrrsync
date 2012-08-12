@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+"""Invoke rrsync on a rotated dir maintained by rrotate.
+"""
+
+import os
+import sys
+from subprocess import call
+
+def main():
+    # look for the dir as 1st or 2nd argument
+    args = sys.argv[1:]
+    for i, arg in enumerate(args[:2]):
+        if not arg.startswith('-'):
+            dir = arg
+            break
+    else:
+        assert False
+
+
+    here = os.path.dirname(os.path.abspath(sys.argv[0]))
+    if 0 != call([os.path.join(here, 'rrlinks'), dir]):
+        print >>sys.stderr, "error running rrlinks"
+        return 1
+
+    if 0 != call([os.path.join(here, 'rrsync')] + args):
+        print >>sys.stderr, "error running rrsync"
+        return 1
+
+    if 0 != call([os.path.join(here, 'rrrotate'), dir]):
+        print >>sys.stderr, "error running rrrotate"
+        return 1
+
+if __name__ == '__main__':
+    sys.exit(main())
+
