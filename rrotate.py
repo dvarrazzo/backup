@@ -107,7 +107,7 @@ class DirHandler(object):
 
         avail = self.get_backup_dirs(type=period.name)
         recent = avail and avail[-1] or None
-        if recent and recent.date >= dir.date and recent <> dir:
+        if recent and recent.date >= dir.date and recent != dir:
             raise ScriptError("new dir %s not more recent than %s"
                 % (avail[-1], dir))
 
@@ -119,7 +119,7 @@ class DirHandler(object):
                     self.rotate(old, date, periods[1:])
 
         else:
-            if recent <> dir:
+            if recent != dir:
                 self.delete_backup_dir(dir)
 
     def _choose_current_dir(self, opt):
