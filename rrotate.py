@@ -45,7 +45,6 @@ class ScriptError(Exception):
     """Controlled exception raised by the script."""
 
 
-Period = namedtuple('Period', "name length retention")
 class BackupDir(namedtuple('BackupDir', "type date")):
     def __str__(self):
         return '%s-%s' % (self.type, self.date.strftime('%Y%m%dT%H%M%S'))
@@ -66,6 +65,8 @@ class BackupDir(namedtuple('BackupDir', "type date")):
 
         return BackupDir(type, date)
 
+
+Period = namedtuple('Period', "name length retention")
 
 # TODO: must be configurable
 SCHEDULE = [
