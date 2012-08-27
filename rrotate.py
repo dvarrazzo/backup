@@ -22,7 +22,7 @@ The tasks of the command are:
   period, and the weekly backup is more than 7 days old, the daily backup dir
   becomes a weekly. Otherwise it is deleted.
 
-- Keep te `curr` and `prev` links up to date.
+- Keep the `curr` and `prev` links up to date.
 
 """
 
