@@ -94,10 +94,11 @@ class DirHandler(object):
         if not curr:
             raise ScriptError("link 'curr' not found")
 
-        self.rotate(curr, opt.date, self.schedule)
+        new = self.rotate(curr, opt.date, self.schedule)
 
         self.clear_link('curr')
         self.clear_link('prev')
+        self.create_link(new, 'latest')
 
     def rotate(self, dir, date, periods):
         if not periods:
@@ -118,9 +119,13 @@ class DirHandler(object):
                 if date - old.date >= period.retention:
                     self.rotate(old, date, periods[1:])
 
+            return dir
+
         else:
             if recent != dir:
                 self.delete_backup_dir(dir)
+            else:
+                return dir
 
     def _choose_current_dir(self, opt):
         # if there is a current dir, and it's still valid, reuse that one.
