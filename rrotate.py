@@ -49,7 +49,7 @@ class BackupDir(namedtuple('BackupDir', "type date")):
     def __str__(self):
         return '%s-%s' % (self.type, self.date.strftime('%Y%m%dT%H%M%S'))
 
-    name_pattern = re.compile(r'^([a-z0-9_]+)-(\d{8}T\d{6})$')
+    name_pattern = re.compile(r'^([a-zA-Z0-9_]+)-(\d{8}T\d{6})$')
 
     @classmethod
     def parse(self, s):
@@ -245,6 +245,7 @@ class DirHandler(object):
             else:
                 raise ScriptError("not a symlink: %s" % fn)
 
+
 def main():
     opt = parse_cmdline()
 
@@ -258,7 +259,6 @@ def main():
         hnd.do_rotate(opt)
     else:
         assert False, "wat?"
-
 
 def parse_cmdline():
     modes = ('links', 'rotate')
