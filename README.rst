@@ -22,7 +22,8 @@ directory with args sanitization. The project contains:
     A script to finish the backup, eventually renaming or deleting old backups.
 
 ``rrrsync``
-    A script to run ``rrlinks``, ``rrsync``, ``rrrotate`` in sequence.
+    A script to run ``rrlinks``, ``rrsync``, or ``rrrotate`` on a restricted
+    directory.
 
 
 Usage
@@ -55,8 +56,10 @@ Usage
     export OPTS="-axvz --delete --delete-excluded --numeric-ids"
     export SSH='ssh -i SOURCE.id_rsa'
 
+    $SSH root@target rrlinks
     rsync $OPTS -e "$SSH" --exclude-from=exclude.home --link-dest=/prev/home/ /home/ root@target:curr/home/
     rsync $OPTS -e "$SSH" --exclude-from=exclude.root --link-dest=/prev/root/ / root@target:curr/root/
+    $SSH root@target rrrotate
 
 The above example assumes ``home`` and ``/`` as two separate file systems to be
 backed up into different dirs. ``exclude.home`` and ``exclude.root`` are files

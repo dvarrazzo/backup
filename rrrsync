@@ -23,19 +23,33 @@ def main():
     else:
         assert False
 
-
     here = os.path.dirname(os.path.abspath(sys.argv[0]))
-    if 0 != call([os.path.join(here, 'rrlinks'), dir], stderr=logfile):
-        print >>sys.stderr, "error running rrlinks"
+
+    cmd = os.environ.get('SSH_ORIGINAL_COMMAND')
+    if not cmd:
+        print >>sys.stderr, "this script should run via ssh"
         return 1
 
-    if 0 != call([os.path.join(here, 'rrsync')] + args):
-        print >>sys.stderr, "error running rrsync"
-        return 1
+    cmd = cmd.split()[0]
 
-    if 0 != call([os.path.join(here, 'rrrotate'), dir], stderr=logfile):
-        print >>sys.stderr, "error running rrrotate"
-        return 1
+    if cmd == 'rrlinks':
+        if 0 != call([os.path.join(here, 'rrlinks'), dir], stderr=logfile):
+            print >>sys.stderr, "error running rrlinks"
+            return 1
+
+    elif cmd == 'rsync':
+        if 0 != call([os.path.join(here, 'rrsync')] + args):
+            print >>sys.stderr, "error running rrsync"
+            return 1
+
+    elif cmd == 'rrrotate':
+        if 0 != call([os.path.join(here, 'rrrotate'), dir], stderr=logfile):
+            print >>sys.stderr, "error running rrrotate"
+            return 1
+
+    else:
+        print >>sys.stderr, "can't run this command:", cmd
+
 
 if __name__ == '__main__':
     sys.exit(main())
