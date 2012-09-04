@@ -72,7 +72,8 @@ Period = namedtuple('Period', "name length retention")
 SCHEDULE = [
     Period('daily',  timedelta(days=1), timedelta(days=7)),
     Period('weekly', timedelta(days=7), timedelta(days=30)),
-    Period('monthly', timedelta(days=30), timedelta(days=360)),
+    Period('monthly', timedelta(days=30), timedelta(days=90)),
+    Period('quarterly', timedelta(days=90), timedelta(days=360)),
     Period('yearly', timedelta(days=360), timedelta.max), ]
 
 
