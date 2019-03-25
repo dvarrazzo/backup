@@ -76,6 +76,13 @@ SCHEDULE = [
     Period('quarterly', timedelta(days=90), timedelta(days=360)),
     Period('yearly', timedelta(days=360), timedelta.max), ]
 
+# SCHEDULE = [
+#     Period('L1', timedelta(days=1),   timedelta(days=5)),
+#     Period('L2', timedelta(days=5),   timedelta(days=25)),
+#     Period('L3', timedelta(days=25),  timedelta(days=125)),
+#     Period('L4', timedelta(days=125), timedelta(days=625)),
+#     Period('L5', timedelta(days=625), timedelta.max), ]
+
 
 class DirHandler(object):
     def __init__(self, base_dir, schedule):
